@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genertel - Pagina 6 - Addebito importo extra</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"><span class="dot">●</span> Genertel <span class="tag">| Assicurazione Online</span></div>
+    <a href="/" class="back-home">← Torna alla home</a>
+    <div class="step">Pagina 6 / Scenario B</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1>Polizza attivata</h1>
+      <p class="subtitle">Scenario B — premio scontato pagato con il conto tokenizzato.</p>
+
+      <div class="result ok" id="result">
+        <div class="icon">✅</div>
+        <div>
+          <div><strong>Pagamento completato</strong></div>
+          <div class="k">Capture ID</div><div class="v" id="r-capture">—</div>
+          <div class="k">Importo pagato</div><div class="v" id="r-amount">—</div>
+          <div class="k">Metodo</div><div class="v" id="r-method">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Black Box NON installata?</h2>
+      <p class="hint">Simula la mancata installazione della Black Box entro i termini: premendo il pulsante il backend
+        eseguirà l'<strong>addebito dell'importo extra</strong> sul conto PayPal tokenizzato
+        (pagamento avviato dal merchant — rimozione dello sconto post-vendita).</p>
+      <button class="btn amber" id="extra-btn">⚡ Addebita importo extra (<span id="extra-label">—</span>)</button>
+
+      <div id="extra-result"></div>
+    </div>
+  </main>
+
+  <section class="logpanel">
+    <div class="loghead">📋 LOG FRONTEND — Pagina 6
+      <button class="clear" id="logclear">pulisci</button>
+    </div>
+    <div class="logbody" id="logbody"></div>
+  </section>
+
+  <script type="module" src="/js/pagina6.js"></script>
+</body>
+</html>

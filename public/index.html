@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genertel - Pagina 1 - Scelta polizza</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"><span class="dot">●</span> Genertel <span class="tag">| Assicurazione Online Auto &amp; Moto</span></div>
+    <div class="step">Pagina 1 / Checkout</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1>La tua polizza Auto &amp; Moto</h1>
+      <p class="subtitle">Protezione completa con dispositivo <strong>Black Box</strong> antifurto e rilevamento sinistri.</p>
+
+      <div class="price-box">
+        <div>
+          <div class="label">Premio annuo polizza</div>
+          <div class="amount" id="display-price">—</div>
+        </div>
+        <div class="hint" style="text-align:right;max-width:240px">
+          Lo sconto è legato all'installazione della Black Box entro i termini contrattuali.
+        </div>
+      </div>
+
+      <div id="bnpl" class="bnpl-banner"></div>
+    </div>
+
+    <div class="card">
+      <h2>Scegli come gestire lo sconto Black Box</h2>
+
+      <div class="option" id="optA" data-scenario="A">
+        <div class="opt-head"><span class="badge">A</span> Paga il premio pieno, sconto a rimborso</div>
+        <p>
+          Paghi subito <strong id="a-price">—</strong> (importo non scontato). Se installi la Black Box
+          secondo le condizioni contrattuali, ti <strong>storniamo <span id="a-extra">—</span></strong>.
+          Se non installi, nulla è dovuto: hai già pagato il pieno.
+        </p>
+      </div>
+
+      <div class="option" id="optB" data-scenario="B">
+        <div class="opt-head"><span class="badge">B</span> Paga il premio scontato, conto tokenizzato</div>
+        <p>
+          Paghi il premio scontato <strong id="b-price">—</strong>. Ti chiediamo di
+          <strong>tokenizzare il conto PayPal</strong>: se NON installi la Black Box entro i termini,
+          ti addebiteremo <strong id="b-extra">—</strong> dopo 20 giorni. Disponibile anche il
+          <strong>pagamento a rate (BNPL)</strong>.
+        </p>
+      </div>
+
+      <button class="btn" id="continue" disabled>Continua</button>
+    </div>
+  </main>
+
+  <section class="logpanel">
+    <div class="loghead">📋 LOG FRONTEND — Pagina 1
+      <button class="clear" id="logclear">pulisci</button>
+    </div>
+    <div class="logbody" id="logbody"></div>
+  </section>
+
+  <script type="module" src="/js/pagina1.js"></script>
+</body>
+</html>

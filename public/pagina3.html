@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genertel - Pagina 3 - Tokenizzazione conto</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"><span class="dot">●</span> Genertel <span class="tag">| Assicurazione Online</span></div>
+    <a href="/" class="back-home">← Torna alla home</a>
+    <div class="step">Pagina 3 / Scenario B</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1>Tokenizzazione del conto PayPal</h1>
+      <p class="subtitle">Scenario B — premio scontato. Salvi il tuo conto PayPal in sicurezza: nessun addebito ora.</p>
+
+      <div class="price-box">
+        <div>
+          <div class="label">Premio scontato (verrà pagato in seguito)</div>
+          <div class="amount" id="display-amount">—</div>
+        </div>
+      </div>
+
+      <div class="result ok" style="background:#fff7e0;border-color:#f0d488">
+        <div class="icon">🔒</div>
+        <div>
+          <strong>Il pagamento avverrà in una fase successiva.</strong>
+          <div class="hint">Salvando il conto autorizzi Genertel ad addebitare l'importo extra
+          (<span id="extra-label">—</span>) qualora la Black Box non venga installata entro i termini.</div>
+        </div>
+      </div>
+
+      <p class="section-label">Salva il tuo conto PayPal</p>
+      <div id="paypal-vault" style="margin-top:10px"></div>
+    </div>
+  </main>
+
+  <section class="logpanel">
+    <div class="loghead">📋 LOG FRONTEND — Pagina 3
+      <button class="clear" id="logclear">pulisci</button>
+    </div>
+    <div class="logbody" id="logbody"></div>
+  </section>
+
+  <script type="module" src="/js/pagina3.js"></script>
+</body>
+</html>

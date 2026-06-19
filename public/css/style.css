@@ -1,0 +1,185 @@
+:root {
+  --brand: #00833e;        /* verde Genertel */
+  --brand-dark: #00632f;
+  --accent: #ffb300;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #1f2a30;
+  --muted: #6b7a82;
+  --border: #e2e8ec;
+  --ok: #1e8e3e;
+  --err: #d93025;
+  --radius: 14px;
+  --shadow: 0 6px 20px rgba(0, 70, 40, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 240px; /* spazio per il pannello log fisso */
+}
+
+/* ---- Header ---- */
+.topbar {
+  background: linear-gradient(90deg, var(--brand), var(--brand-dark));
+  color: #fff;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+.topbar .logo {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topbar .logo .dot { color: var(--accent); }
+.topbar .tag { font-size: 13px; opacity: 0.9; }
+.topbar .back-home {
+  margin-left: auto;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar .back-home:hover { opacity: 1; text-decoration: underline; }
+.topbar .step {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+/* ---- Layout ---- */
+.container {
+  max-width: 720px;
+  margin: 28px auto;
+  padding: 0 16px;
+}
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 26px;
+  margin-bottom: 20px;
+}
+h1 { font-size: 22px; margin: 0 0 6px; }
+h2 { font-size: 18px; margin: 0 0 12px; }
+.subtitle { color: var(--muted); margin: 0 0 20px; }
+
+/* ---- Riepilogo prezzo ---- */
+.price-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 18px;
+  background: #f0f7f2;
+  border: 1px solid #d6e9dd;
+  border-radius: var(--radius);
+  margin-bottom: 18px;
+}
+.price-box .label { color: var(--muted); font-size: 14px; }
+.price-box .amount { font-size: 28px; font-weight: 800; color: var(--brand-dark); }
+.price-box .amount small { font-size: 14px; font-weight: 600; }
+.strike { text-decoration: line-through; color: var(--muted); font-size: 16px; font-weight: 600; }
+
+/* ---- Opzioni A/B ---- */
+.option {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.option:hover { border-color: var(--brand); }
+.option.selected { border-color: var(--brand); background: #f0f7f2; }
+.option .opt-head { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.option .badge {
+  background: var(--brand); color: #fff; font-size: 12px;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.option p { margin: 8px 0 0 34px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+/* ---- Bottoni ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  background: var(--brand); color: #fff; border: none;
+  padding: 14px 20px; border-radius: 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  width: 100%; transition: background 0.15s, opacity 0.15s;
+}
+.btn:hover { background: var(--brand-dark); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.secondary { background: #fff; color: var(--brand); border: 2px solid var(--brand); }
+.btn.secondary:hover { background: #f0f7f2; }
+.btn.amber { background: var(--accent); color: #3a2e00; }
+.btn.amber:hover { background: #e6a200; }
+
+/* ---- Separatore "oppure" ---- */
+.divider {
+  display: flex; align-items: center; gap: 14px;
+  color: var(--muted); font-size: 13px; text-transform: uppercase;
+  letter-spacing: 1px; margin: 18px 0;
+}
+.divider::before, .divider::after {
+  content: ""; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ---- Banner BNPL ---- */
+.bnpl-banner { margin: 16px 0; min-height: 24px; }
+
+/* ---- Esito ---- */
+.result {
+  border-radius: var(--radius); padding: 18px; margin: 16px 0;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.result.ok { background: #e7f5ea; border: 1px solid #b7e0c1; }
+.result.err { background: #fde8e6; border: 1px solid #f5b5ae; }
+.result .icon { font-size: 22px; }
+.result .k { color: var(--muted); font-size: 13px; }
+.result .v { font-family: ui-monospace, monospace; font-size: 13px; word-break: break-all; }
+
+.section-label { font-weight: 700; margin: 4px 0 10px; }
+.hint { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+/* ---- Pannello log frontend (fisso in basso) ---- */
+.logpanel {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 220px; background: #0d1b16; color: #c9f7d8;
+  font-family: ui-monospace, "SF Mono", monospace; font-size: 12px;
+  border-top: 3px solid var(--brand);
+  display: flex; flex-direction: column; z-index: 50;
+}
+.logpanel .loghead {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 14px; background: #0a1410; color: #8fe3ab;
+  font-weight: 700; border-bottom: 1px solid #1c3327;
+}
+.logpanel .loghead .clear {
+  margin-left: auto; cursor: pointer; color: #8fe3ab;
+  background: transparent; border: 1px solid #1c3327; border-radius: 6px;
+  padding: 2px 8px; font-size: 11px;
+}
+.logpanel .logbody { overflow-y: auto; padding: 8px 14px; flex: 1; }
+.logpanel .line { white-space: pre-wrap; line-height: 1.5; }
+.logpanel .line .time { color: #5fae7a; }
+.logpanel .line.info { color: #c9f7d8; }
+.logpanel .line.api { color: #7fd1ff; }
+.logpanel .line.ok { color: #87ff9f; }
+.logpanel .line.err { color: #ff9a8f; }
+.logpanel .line.step { color: #ffd479; }
