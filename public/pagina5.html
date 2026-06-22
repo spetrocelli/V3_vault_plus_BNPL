@@ -1,46 +1,46 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Genertel - Pagina 5 - Pagamento conto tokenizzato</title>
+  <title>Acme Insurance - Page 5 - Tokenized account payment</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="logo"><span class="dot">●</span> Genertel <span class="tag">| Assicurazione Online</span></div>
-    <a href="/" class="back-home">← Torna alla home</a>
-    <div class="step">Pagina 5 / Scenario B</div>
+    <div class="logo"><span class="dot">●</span> Acme Insurance <span class="tag">| Online Insurance</span></div>
+    <a href="/" class="back-home">← Back to home</a>
+    <div class="step">Page 5 / Scenario B</div>
   </header>
 
   <main class="container">
     <div class="card">
-      <h1>Completa il pagamento del premio scontato</h1>
-      <p class="subtitle">Scenario B — il tuo conto PayPal è tokenizzato. Scegli come pagare il premio scontato.</p>
+      <h1>Complete the discounted premium payment</h1>
+      <p class="subtitle">Scenario B — your PayPal account is tokenized. Choose how to pay the discounted premium.</p>
 
       <div class="price-box">
         <div>
-          <div class="label">Totale da pagare (premio scontato)</div>
+          <div class="label">Total to pay (discounted premium)</div>
           <div class="amount" id="display-amount">—</div>
         </div>
       </div>
 
-      <p class="hint" id="vault-info">Conto tokenizzato: —</p>
+      <p class="hint" id="vault-info">Tokenized account: —</p>
 
-      <!-- 1) Paga ora gestito dal JS SDK (one-click conto salvato / Edit FI) -->
-      <p class="section-label">1 · Paga ora — One-click (JS SDK)</p>
-      <p class="hint">Bottone PayPal sul conto salvato: mostra il metodo salvato e consente di modificare lo strumento (Edit FI).</p>
+      <!-- 1) Pay now handled by the JS SDK (one-click saved account / Edit FI) -->
+      <p class="section-label">1 · Pay now — One-click (JS SDK)</p>
+      <p class="hint">PayPal button on the saved account: shows the saved method and lets you change the instrument (Edit FI).</p>
       <div id="paypal-pay"></div>
 
-      <!-- 2) Paga ora con cattura lato server (MIT: v2/order con vault_id) -->
-      <p class="section-label" style="margin-top:18px">2 · Paga ora — Server side (vault_id)</p>
-      <p class="hint">Cattura lato backend: crea l'ordine v2 passando il <code>vault_id</code> (merchant-initiated, one-click) e cattura. Nessun popup.</p>
-      <button class="btn" id="pay-server">⚡ Paga ora (cattura server side)</button>
+      <!-- 2) Pay now with server-side capture (MIT: v2/order with vault_id) -->
+      <p class="section-label" style="margin-top:18px">2 · Pay now — Server side (vault_id)</p>
+      <p class="hint">Backend-side capture: creates the v2 order passing the <code>vault_id</code> (merchant-initiated, one-click) and captures. No popup.</p>
+      <button class="btn" id="pay-server">⚡ Pay now (server-side capture)</button>
 
-      <div class="divider">oppure</div>
+      <div class="divider">or</div>
 
-      <!-- 3) Paga a rate: banner BNPL prima del pulsante -->
-      <p class="section-label">3 · Paga a rate</p>
+      <!-- 3) Pay in installments: BNPL banner before the button -->
+      <p class="section-label">3 · Pay in installments</p>
       <div id="bnpl" class="bnpl-banner"></div>
       <div id="paypal-paylater"></div>
 
@@ -49,8 +49,8 @@
   </main>
 
   <section class="logpanel">
-    <div class="loghead">📋 LOG FRONTEND — Pagina 5
-      <button class="clear" id="logclear">pulisci</button>
+    <div class="loghead">📋 FRONTEND LOG — Page 5
+      <button class="clear" id="logclear">clear</button>
     </div>
     <div class="logbody" id="logbody"></div>
   </section>

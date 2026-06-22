@@ -1,4 +1,4 @@
-// Logger backend: stampa in modo leggibile ogni interazione e chiamata PayPal.
+// Backend logger: prints every interaction and PayPal call in a readable way.
 const colors = {
   reset: '\x1b[0m',
   dim: '\x1b[2m',
@@ -38,7 +38,7 @@ export function logError(message, err) {
   if (err) console.log(`${colors.red}   ${err.stack || err}${colors.reset}`);
 }
 
-// Estrae i campi utili dalle risposte PayPal per un log conciso.
+// Extracts the useful fields from PayPal responses for a concise log.
 function summarize(data) {
   if (!data || typeof data !== 'object') return '';
   const bits = [];

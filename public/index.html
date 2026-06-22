@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Genertel - Pagina 1 - Scelta polizza</title>
+  <title>Acme Insurance - Page 1 - Policy selection</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="logo"><span class="dot">●</span> Genertel <span class="tag">| Assicurazione Online Auto &amp; Moto</span></div>
-    <div class="step">Pagina 1 / Checkout</div>
+    <div class="logo"><span class="dot">●</span> Acme Insurance <span class="tag">| Online Car &amp; Motorcycle Insurance</span></div>
+    <div class="step">Page 1 / Checkout</div>
   </header>
 
   <main class="container">
     <div class="card">
-      <h1>La tua polizza Auto &amp; Moto</h1>
-      <p class="subtitle">Protezione completa con dispositivo <strong>Black Box</strong> antifurto e rilevamento sinistri.</p>
+      <h1>Your Car &amp; Motorcycle policy</h1>
+      <p class="subtitle">Full protection with the <strong>Black Box</strong> anti-theft and crash-detection device.</p>
 
       <div class="price-box">
         <div>
-          <div class="label">Premio annuo polizza</div>
+          <div class="label">Annual policy premium</div>
           <div class="amount" id="display-price">—</div>
         </div>
         <div class="hint" style="text-align:right;max-width:240px">
-          Lo sconto è legato all'installazione della Black Box entro i termini contrattuali.
+          The discount is tied to installing the Black Box within the contractual terms.
         </div>
       </div>
 
@@ -31,34 +31,34 @@
     </div>
 
     <div class="card">
-      <h2>Scegli come gestire lo sconto Black Box</h2>
+      <h2>Choose how to handle the Black Box discount</h2>
 
       <div class="option" id="optA" data-scenario="A">
-        <div class="opt-head"><span class="badge">A</span> Paga il premio pieno, sconto a rimborso</div>
+        <div class="opt-head"><span class="badge">A</span> Pay the full premium, discount as refund</div>
         <p>
-          Paghi subito <strong id="a-price">—</strong> (importo non scontato). Se installi la Black Box
-          secondo le condizioni contrattuali, ti <strong>storniamo <span id="a-extra">—</span></strong>.
-          Se non installi, nulla è dovuto: hai già pagato il pieno.
+          You pay <strong id="a-price">—</strong> now (non-discounted amount). If you install the Black Box
+          according to the contract terms, we <strong>refund you <span id="a-extra">—</span></strong>.
+          If you don't install it, nothing else is due: you already paid the full amount.
         </p>
       </div>
 
       <div class="option" id="optB" data-scenario="B">
-        <div class="opt-head"><span class="badge">B</span> Paga il premio scontato, conto tokenizzato</div>
+        <div class="opt-head"><span class="badge">B</span> Pay the discounted premium, tokenized account</div>
         <p>
-          Paghi il premio scontato <strong id="b-price">—</strong>. Ti chiediamo di
-          <strong>tokenizzare il conto PayPal</strong>: se NON installi la Black Box entro i termini,
-          ti addebiteremo <strong id="b-extra">—</strong> dopo 20 giorni. Disponibile anche il
-          <strong>pagamento a rate (BNPL)</strong>.
+          You pay the discounted premium <strong id="b-price">—</strong>. We ask you to
+          <strong>tokenize your PayPal account</strong>: if you do NOT install the Black Box within the terms,
+          we will charge you <strong id="b-extra">—</strong> after 20 days. <strong>Buy Now, Pay Later (BNPL)</strong>
+          is also available.
         </p>
       </div>
 
-      <button class="btn" id="continue" disabled>Continua</button>
+      <button class="btn" id="continue" disabled>Continue</button>
     </div>
   </main>
 
   <section class="logpanel">
-    <div class="loghead">📋 LOG FRONTEND — Pagina 1
-      <button class="clear" id="logclear">pulisci</button>
+    <div class="loghead">📋 FRONTEND LOG — Page 1
+      <button class="clear" id="logclear">clear</button>
     </div>
     <div class="logbody" id="logbody"></div>
   </section>

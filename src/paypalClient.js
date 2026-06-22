@@ -1,4 +1,4 @@
-// Client REST PayPal: OAuth, Orders v2, Vault (Payment Tokens v3), Refunds.
+// PayPal REST client: OAuth, Orders v2, Vault (Payment Tokens v3), Refunds.
 import { logRequest, logResponse, logError } from './logger.js';
 
 const ENV = process.env.PAYPAL_ENV || 'sandbox';
@@ -10,7 +10,7 @@ const CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const SECRET = process.env.PAYPAL_SECRET;
 const CURRENCY = process.env.CURRENCY || 'EUR';
 
-// Esegue una chiamata REST verso PayPal con logging request/response.
+// Performs a REST call to PayPal with request/response logging.
 async function call(method, path, { token, body, extraHeaders } = {}) {
   const url = `${BASE}${path}`;
   logRequest(method, path, body);
@@ -30,7 +30,7 @@ async function call(method, path, { token, body, extraHeaders } = {}) {
 
   if (!res.ok) {
     const message = data?.message || data?.error_description || `HTTP ${res.status}`;
-    const err = new Error(`PayPal ${method} ${path} fallita: ${message}`);
+    const err = new Error(`PayPal ${method} ${path} failed: ${message}`);
     err.status = res.status;
     err.details = data;
     throw err;
@@ -38,18 +38,18 @@ async function call(method, path, { token, body, extraHeaders } = {}) {
   return data;
 }
 
-// OAuth2 client-credentials. Con includeIdToken=true richiede anche l'id_token
-// del payer (response_type=id_token), necessario per il flusso "Save Payment
-// Methods" da passare all'SDK come data-user-id-token.
+// OAuth2 client-credentials. With includeIdToken=true it also requests the payer's
+// id_token (response_type=id_token), required for the "Save Payment Methods" flow
+// to pass to the SDK as data-user-id-token.
 async function oauth(includeIdToken = false, targetCustomerId) {
-  if (!CLIENT_ID || !SECRET || CLIENT_ID.startsWith('INCOLLA')) {
-    throw new Error('Credenziali PayPal mancanti: compila PAYPAL_CLIENT_ID e PAYPAL_SECRET nel file .env');
+  if (!CLIENT_ID || !SECRET || CLIENT_ID.startsWith('PASTE')) {
+    throw new Error('Missing PayPal credentials: set PAYPAL_CLIENT_ID and PAYPAL_SECRET in the .env file');
   }
   const auth = Buffer.from(`${CLIENT_ID}:${SECRET}`).toString('base64');
   const url = `${BASE}/v1/oauth2/token`;
   let body = 'grant_type=client_credentials';
   if (includeIdToken) body += '&response_type=id_token';
-  // Returning payer: lega l'id_token al customer salvato in vault.
+  // Returning payer: binds the id_token to the customer saved in the vault.
   if (targetCustomerId) body += `&target_customer_id=${encodeURIComponent(targetCustomerId)}`;
   logRequest('POST', '/v1/oauth2/token', {
     grant_type: 'client_credentials',
@@ -66,7 +66,7 @@ async function oauth(includeIdToken = false, targetCustomerId) {
   });
   const data = await res.json();
   logResponse('POST', '/v1/oauth2/token', res.status, { id: includeIdToken ? 'access_token+id_token' : 'access_token', status: res.ok ? 'OK' : 'ERROR' });
-  if (!res.ok) throw new Error(`OAuth PayPal fallita: ${data.error_description || res.status}`);
+  if (!res.ok) throw new Error(`PayPal OAuth failed: ${data.error_description || res.status}`);
   return data;
 }
 
@@ -75,29 +75,29 @@ export async function getAccessToken() {
   return data.access_token;
 }
 
-// id_token del payer per l'SDK (data-user-id-token) nel flusso vault.
-// Con targetCustomerId -> returning payer (mostra il conto già salvato).
+// Payer's id_token for the SDK (data-user-id-token) in the vault flow.
+// With targetCustomerId -> returning payer (shows the already saved account).
 export async function getIdToken(targetCustomerId) {
   const data = await oauth(true, targetCustomerId);
   return data.id_token;
 }
 
-// PayPal-Request-Id per idempotenza (usa il clock del server: ok lato Node).
+// PayPal-Request-Id for idempotency (uses the server clock: fine on the Node side).
 function requestId(prefix) {
   return `${prefix}-${Date.now()}`;
 }
 
-// Crea un ordine CAPTURE.
-//  - vaultId presente  -> merchant-initiated transaction sul conto tokenizzato (Pagina 6)
-//  - altrimenti        -> checkout interattivo (guest o returning payer one-click)
-// La polizza è un bene digitale: NO_SHIPPING. experience_context allinea brand/locale.
-export async function createOrder({ amount, description, vaultId, brand = 'Genertel Assicurazione Online' }) {
+// Creates a CAPTURE order.
+//  - vaultId present  -> merchant-initiated transaction on the tokenized account (Page 6)
+//  - otherwise        -> interactive checkout (guest or returning payer one-click)
+// The policy is a digital good: NO_SHIPPING. experience_context aligns brand/locale.
+export async function createOrder({ amount, description, vaultId, brand = 'Acme Insurance' }) {
   const token = await getAccessToken();
   const order = {
     intent: 'CAPTURE',
     purchase_units: [{
       amount: { currency_code: CURRENCY, value: amount },
-      description: description || 'Polizza assicurativa Genertel',
+      description: description || 'Acme Insurance policy',
     }],
   };
   if (vaultId) {
@@ -115,9 +115,9 @@ export async function createOrder({ amount, description, vaultId, brand = 'Gener
     order.payment_source = {
       paypal: {
         experience_context: {
-          // Bene digitale: nessuna spedizione. DEVE stare qui dentro experience_context:
-          // con payment_source.paypal il vecchio application_context viene ignorato e
-          // PayPal mostrerebbe il popup di selezione del metodo di pagamento.
+          // Digital good: no shipping. This MUST live inside experience_context:
+          // with payment_source.paypal the legacy application_context is ignored and
+          // PayPal would show the payment-method selection popup.
           shipping_preference: 'NO_SHIPPING',
           payment_method_preference: 'IMMEDIATE_PAYMENT_REQUIRED',
           brand_name: brand,
@@ -129,7 +129,7 @@ export async function createOrder({ amount, description, vaultId, brand = 'Gener
       },
     };
   }
-  // PayPal-Request-Id è obbligatorio quando si crea un ordine con payment_source.
+  // PayPal-Request-Id is required when creating an order with payment_source.
   return call('POST', '/v2/checkout/orders', {
     token,
     body: order,
@@ -137,7 +137,7 @@ export async function createOrder({ amount, description, vaultId, brand = 'Gener
   });
 }
 
-// Cattura un ordine approvato.
+// Captures an approved order.
 export async function captureOrder(orderId) {
   const token = await getAccessToken();
   return call('POST', `/v2/checkout/orders/${orderId}/capture`, {
@@ -147,7 +147,7 @@ export async function captureOrder(orderId) {
   });
 }
 
-// Rimborso (storno) totale o parziale di una capture.
+// Full or partial refund (reversal) of a capture.
 export async function refundCapture(captureId, amount) {
   const token = await getAccessToken();
   const body = amount
@@ -156,8 +156,8 @@ export async function refundCapture(captureId, amount) {
   return call('POST', `/v2/payments/captures/${captureId}/refund`, { token, body });
 }
 
-// Vault: crea un setup token per salvare il conto PayPal senza acquisto immediato.
-// (Save Payment Methods - Purchase Later, PayPal Wallet: return_url/cancel_url richiesti)
+// Vault: create a setup token to save the PayPal account without an immediate purchase.
+// (Save Payment Methods - Purchase Later, PayPal Wallet: return_url/cancel_url required)
 export async function createSetupToken() {
   const token = await getAccessToken();
   const body = {
@@ -165,7 +165,7 @@ export async function createSetupToken() {
       paypal: {
         usage_type: 'MERCHANT',
         experience_context: {
-          brand_name: 'Genertel Assicurazione Online',
+          brand_name: 'Acme Insurance',
           return_url: 'https://example.com/returnUrl',
           cancel_url: 'https://example.com/cancelUrl',
         },
@@ -179,7 +179,7 @@ export async function createSetupToken() {
   });
 }
 
-// Vault: scambia il setup token approvato con un payment token permanente (vault_id).
+// Vault: exchange the approved setup token for a permanent payment token (vault_id).
 export async function createPaymentToken(setupTokenId) {
   const token = await getAccessToken();
   const body = {

@@ -1,47 +1,47 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Genertel - Pagina 4 - Esito e storno</title>
+  <title>Acme Insurance - Page 4 - Result and refund</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="logo"><span class="dot">●</span> Genertel <span class="tag">| Assicurazione Online</span></div>
-    <a href="/" class="back-home">← Torna alla home</a>
-    <div class="step">Pagina 4 / Scenario A</div>
+    <div class="logo"><span class="dot">●</span> Acme Insurance <span class="tag">| Online Insurance</span></div>
+    <a href="/" class="back-home">← Back to home</a>
+    <div class="step">Page 4 / Scenario A</div>
   </header>
 
   <main class="container">
     <div class="card">
-      <h1>Esito pagamento</h1>
-      <p class="subtitle">Scenario A — premio pieno pagato. Dopo l'installazione della Black Box puoi richiedere lo storno dell'importo extra.</p>
+      <h1>Payment result</h1>
+      <p class="subtitle">Scenario A — full premium paid. After installing the Black Box you can request the refund of the extra amount.</p>
 
       <div class="result ok" id="result">
         <div class="icon">✅</div>
         <div>
-          <div><strong>Pagamento completato</strong></div>
+          <div><strong>Payment completed</strong></div>
           <div class="k">Order ID</div><div class="v" id="r-order">—</div>
           <div class="k">Capture ID</div><div class="v" id="r-capture">—</div>
-          <div class="k">Importo pagato</div><div class="v" id="r-amount">—</div>
+          <div class="k">Amount paid</div><div class="v" id="r-amount">—</div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>Black Box installata?</h2>
-      <p class="hint">Simula l'avvenuta installazione della Black Box entro i termini: premendo il pulsante il backend
-        eseguirà lo <strong>storno dell'importo extra</strong> (rimborso parziale della capture).</p>
-      <button class="btn amber" id="refund-btn">↩︎ Storna importo extra (<span id="extra-label">—</span>)</button>
+      <h2>Black Box installed?</h2>
+      <p class="hint">Simulate the Black Box being installed within the terms: pressing the button the backend
+        will perform the <strong>refund of the extra amount</strong> (partial refund of the capture).</p>
+      <button class="btn amber" id="refund-btn">↩︎ Refund extra amount (<span id="extra-label">—</span>)</button>
 
       <div id="refund-result"></div>
     </div>
   </main>
 
   <section class="logpanel">
-    <div class="loghead">📋 LOG FRONTEND — Pagina 4
-      <button class="clear" id="logclear">pulisci</button>
+    <div class="loghead">📋 FRONTEND LOG — Page 4
+      <button class="clear" id="logclear">clear</button>
     </div>
     <div class="logbody" id="logbody"></div>
   </section>

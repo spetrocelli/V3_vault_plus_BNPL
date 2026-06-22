@@ -1,7 +1,7 @@
 {
-  "name": "genertel-paypal-demo",
+  "name": "insurance-paypal-demo",
   "version": "1.0.0",
-  "description": "Demo Genertel - assicurazione online: tokenizzazione conto PayPal + BNPL (Pay Later) per gestione sconto black box",
+  "description": "Online insurance demo - PayPal account tokenization + BNPL (Pay Later) for black box discount handling",
   "type": "module",
   "main": "server.js",
   "scripts": {

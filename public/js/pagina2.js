@@ -4,40 +4,40 @@ Logger.init();
 
 (async function init() {
   const st = State.get();
-  Logger.step('Inizializzazione Pagina 2 - Scenario A (premio pieno)');
+  Logger.step('Initializing Page 2 - Scenario A (full premium)');
   const cfg = await getConfig();
   const amount = st.amount || cfg.fullPrice;
   document.getElementById('display-amount').textContent = eur(amount);
-  Logger.info(`Importo da pagare: ${amount} ${cfg.currency}`);
+  Logger.info(`Amount to pay: ${amount} ${cfg.currency}`);
 
   const paypal = await loadPayPalSdk(cfg.clientId);
 
-  // Handler condivisi dai due bottoni (PayPal "Paga ora" e Pay Later "Paga dopo").
+  // Handlers shared by both buttons (PayPal "Pay now" and Pay Later).
   const handlers = {
     createOrder: async () => {
-      Logger.step('createOrder (Scenario A) - richiesta al backend');
-      const order = await api('/api/orders', { amount, description: 'Polizza Auto/Moto - premio pieno' });
-      Logger.ok('Ordine creato: ' + order.id);
+      Logger.step('createOrder (Scenario A) - backend request');
+      const order = await api('/api/orders', { amount, description: 'Car/Motorcycle policy - full premium' });
+      Logger.ok('Order created: ' + order.id);
       return order.id;
     },
     onApprove: async (data) => {
-      Logger.step('onApprove - cattura ordine ' + data.orderID);
+      Logger.step('onApprove - capturing order ' + data.orderID);
       const result = await api(`/api/orders/${data.orderID}/capture`, {});
-      Logger.ok(`Pagamento catturato: capture=${result.captureId} stato=${result.status}`);
+      Logger.ok(`Payment captured: capture=${result.captureId} status=${result.status}`);
       State.set({
         captureId: result.captureId,
         capturedAmount: result.amount?.value,
         orderId: result.id,
       });
-      Logger.step('Pagamento completato → Pagina 4 (esito)');
+      Logger.step('Payment completed → Page 4 (result)');
       goTo('/pagina4.html');
     },
-    onCancel: () => Logger.err('Pagamento annullato dall\'utente'),
-    onError: (err) => Logger.err('Errore PayPal Buttons: ' + err),
+    onCancel: () => Logger.err('Payment cancelled by the user'),
+    onError: (err) => Logger.err('PayPal Buttons error: ' + err),
   };
 
-  // SOLO PayPal e Pay Later, stesso look & feel (gold/rect).
-  // Bottone PayPal sopra, banner BNPL in mezzo, bottone Pay Later sotto.
+  // ONLY PayPal and Pay Later, same look & feel (gold/rect).
+  // PayPal button on top, BNPL banner in the middle, Pay Later button below.
   const style = { layout: 'vertical', shape: 'rect', color: 'gold' };
 
   paypal.Buttons({ fundingSource: paypal.FUNDING.PAYPAL, style, ...handlers })
@@ -48,5 +48,5 @@ Logger.init();
   paypal.Buttons({ fundingSource: paypal.FUNDING.PAYLATER, style, ...handlers })
     .render('#paypal-paylater');
 
-  Logger.ok('Bottoni renderizzati (gold): PayPal · banner BNPL · Pay Later');
+  Logger.ok('Buttons rendered (gold): PayPal · BNPL banner · Pay Later');
 })();

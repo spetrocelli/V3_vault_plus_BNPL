@@ -1,56 +1,58 @@
-# Genertel — Demo PayPal: tokenizzazione conto + BNPL
+# Acme Insurance — PayPal Demo: account tokenization + BNPL
 
-Demo di un funnel di checkout "assicurazione online" (Auto & Moto) per il merchant **Genertel**.
-Gestisce lo **sconto legato all'installazione della Black Box** tramite due scenari:
+Demo of an "online insurance" checkout funnel (Car & Motorcycle) for the merchant **Acme Insurance**.
+It handles the **discount tied to the Black Box installation** through two scenarios:
 
-- **Scenario A** — l'utente paga il **premio pieno**; se installa la Black Box, gli viene **stornato** l'importo extra.
-- **Scenario B** — l'utente **tokenizza il conto PayPal** e paga il **premio scontato**; se NON installa la Black Box, gli viene **addebitato** l'importo extra (sconto rimosso post-vendita).
+- **Scenario A** — the user pays the **full premium**; if they install the Black Box, the extra amount is **refunded**.
+- **Scenario B** — the user **tokenizes the PayPal account** and pays the **discounted premium**; if they do NOT install the Black Box, the extra amount is **charged** (discount removed after sale).
 
-Integrazione **PayPal diretta**: JS SDK (Buttons, Pay Later/BNPL, Messages) + REST API (Orders v2, Vault/Payment Tokens v3, Refunds).
+**Direct PayPal integration**: JS SDK (Buttons, Pay Later/BNPL, Messages) + REST API (Orders v2, Vault/Payment Tokens v3, Refunds).
+
+> The brand name ("Acme Insurance") is generic so the demo can be reused for other clients.
 
 ## Funnel
 
-| Pagina | Scenario | Contenuto |
+| Page | Scenario | Content |
 |--------|----------|-----------|
-| **1** (`index.html`) | — | Scelta polizza, prezzo, opzioni A/B, banner BNPL. A→Pag.2, B→Pag.3 |
-| **2** | A | Pulsanti PayPal "Paga ora" e "Paga dopo", banner BNPL. → Pag.4 |
-| **4** | A | Esito transazione + pulsante **storno** importo extra |
-| **3** | B | Tokenizzazione conto PayPal (nessun addebito). → Pag.5 |
-| **5** | B | Scritta "Paga a rate" + banner BNPL + pulsante "Paga a rate"; "oppure"; pulsante "Paga subito — Edit Funding Instrument". → Pag.6 |
-| **6** | B | Pulsante **addebito importo extra** sul conto tokenizzato (mancata installazione) |
+| **1** (`index.html`) | — | Policy selection, price, A/B options, BNPL banner. A→Page 2, B→Page 3 |
+| **2** | A | "Pay now" and "Pay Later" PayPal buttons, BNPL banner. → Page 4 |
+| **4** | A | Transaction result + extra amount **refund** button |
+| **3** | B | PayPal account tokenization (no charge). → Page 5 |
+| **5** | B | "Pay in installments" + BNPL banner + button; "or"; "Pay now — Edit Funding Instrument" + server-side capture. → Page 6 |
+| **6** | B | Extra amount **charge** button on the tokenized account (Black Box not installed) |
 
 ## Setup
 
-1. Installa le dipendenze:
+1. Install dependencies:
    ```bash
    npm install
    ```
-2. Inserisci le credenziali **PayPal Sandbox** nel file `.env`:
+2. Add your **PayPal Sandbox** credentials to the `.env` file:
    ```env
    PAYPAL_CLIENT_ID=...
    PAYPAL_SECRET=...
    ```
-   (le altre variabili — importi, valuta, porta — sono già impostate; modificabili a piacere)
-3. Avvia in sviluppo (con **nodemon**):
+   (the other variables — amounts, currency, port — are already set; change them as you like)
+3. Run in development (with **nodemon**):
    ```bash
    npm run dev
    ```
-   oppure `npm start`.
-4. Apri http://localhost:3000
+   or `npm start`.
+4. Open http://localhost:3000
 
-## Importi (default, modificabili in `.env`)
+## Amounts (defaults, configurable in `.env`)
 
-- Premio pieno: **500,00 €** (Scenario A)
-- Premio scontato: **400,00 €** (Scenario B)
-- Importo extra / sconto: **100,00 €** (storno o addebito)
+- Full premium: **500.00 €** (Scenario A)
+- Discounted premium: **400.00 €** (Scenario B)
+- Extra amount / discount: **100.00 €** (refund or charge)
 
-## Log
+## Logs
 
-- **Frontend**: ogni pagina ha un pannello log fisso in basso che traccia tutte le interazioni (più `console.log`).
-- **Backend**: ogni richiesta dal frontend e ogni chiamata PayPal (request/response) sono loggate in console.
+- **Frontend**: every page has a fixed log panel at the bottom that traces all interactions (plus `console.log`).
+- **Backend**: every request from the frontend and every PayPal call (request/response) are logged to the console.
 
-## Note tecniche
+## Technical notes
 
-- Vault senza acquisto (Scenario B) usa il flusso *Save Payment Method*: `createVaultSetupToken` → `/v3/vault/setup-tokens`, poi `onApprove` → `/v3/vault/payment-tokens` (ottiene il `vault_id`).
-- I pagamenti differiti (Pag.5 "Paga subito" e Pag.6 "addebito extra") usano il `vault_id` come *merchant-initiated transaction* (`stored_credential`).
-- Il `vault_id` viene conservato **in memoria** lato backend (demo): riavviando il server si perde.
+- Vault without purchase (Scenario B) uses the *Save Payment Method* flow: `createVaultSetupToken` → `/v3/vault/setup-tokens`, then `onApprove` → `/v3/vault/payment-tokens` (obtains the `vault_id`).
+- Deferred payments (Page 5 "Pay now — server side" and Page 6 "extra charge") use the `vault_id` as a *merchant-initiated transaction* (`stored_credential`).
+- The `vault_id` is kept **in memory** on the backend (demo): restarting the server loses it.
