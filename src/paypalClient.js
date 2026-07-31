@@ -87,27 +87,76 @@ function requestId(prefix) {
   return `${prefix}-${Date.now()}`;
 }
 
+function extractVaultId(response) {
+  return response?.payment_source?.paypal?.vault_id
+    || response?.payment_source?.paypal?.attributes?.vault?.id
+    || response?.payment_source?.paypal?.id
+    || response?.vault_id
+    || null;
+}
+
 // Creates a CAPTURE order.
 //  - vaultId present  -> merchant-initiated transaction on the tokenized account (Page 6)
+//  - createVault true -> checkout with vault creation during the purchase (Scenario C)
 //  - otherwise        -> interactive checkout (guest or returning payer one-click)
 // The policy is a digital good: NO_SHIPPING. experience_context aligns brand/locale.
-export async function createOrder({ amount, description, vaultId, brand = 'Acme Insurance' }) {
+export async function createOrder({
+  amount,
+  description,
+  vaultId,
+  createVault = false,
+  vaultAttributes,
+  brand = 'Acme Insurance',
+  userAction = 'PAY_NOW',
+  returnUrl,
+  cancelUrl,
+  currencyCode = CURRENCY,
+  paymentMethodSelected,
+  paymentMethodPreference,
+}) {
   const token = await getAccessToken();
   const order = {
     intent: 'CAPTURE',
     purchase_units: [{
-      amount: { currency_code: CURRENCY, value: amount },
+      amount: { currency_code: currencyCode, value: amount },
       description: description || 'Acme Insurance policy',
     }],
   };
-  if (vaultId) {
+  const experience_context = {
+    brand_name: brand,
+    locale: 'it-IT',
+    shipping_preference: 'NO_SHIPPING',
+    return_url: returnUrl || 'https://example.com/return',
+    cancel_url: cancelUrl || 'https://example.com/cancel',
+    user_action: userAction,
+  };
+  if (createVault) {
+    order.payment_source = {
+      paypal: {
+        attributes: {
+          vault: vaultAttributes || {
+            store_in_vault: 'ON_SUCCESS',
+            usage_type: 'MERCHANT',
+            customer_type: 'CONSUMER',
+          },
+        },
+        experience_context: {
+          ...experience_context,
+          ...(paymentMethodSelected ? { payment_method_selected: paymentMethodSelected } : {}),
+          ...(paymentMethodPreference ? { payment_method_preference: paymentMethodPreference } : {}),
+          user_action: 'PAY_NOW',
+        },
+      },
+    };
+  } else if (vaultId) {
     order.payment_source = {
       paypal: {
         vault_id: vaultId,
-        stored_credential: {
-          payment_initiator: 'MERCHANT',
-          payment_type: 'UNSCHEDULED',
-          usage: 'SUBSEQUENT',
+        experience_context: {
+          ...experience_context,
+          ...(paymentMethodSelected ? { payment_method_selected: paymentMethodSelected } : {}),
+          ...(paymentMethodPreference ? { payment_method_preference: paymentMethodPreference } : {}),
+          user_action: 'PAY_NOW',
         },
       },
     };
@@ -115,36 +164,37 @@ export async function createOrder({ amount, description, vaultId, brand = 'Acme 
     order.payment_source = {
       paypal: {
         experience_context: {
-          // Digital good: no shipping. This MUST live inside experience_context:
-          // with payment_source.paypal the legacy application_context is ignored and
-          // PayPal would show the payment-method selection popup.
-          shipping_preference: 'NO_SHIPPING',
-          payment_method_preference: 'IMMEDIATE_PAYMENT_REQUIRED',
-          brand_name: brand,
-          locale: 'it-IT',
-          user_action: 'PAY_NOW',
-          return_url: 'https://example.com/return',
-          cancel_url: 'https://example.com/cancel',
+          ...experience_context,
+          ...(paymentMethodPreference ? { payment_method_preference: paymentMethodPreference } : {}),
         },
       },
     };
   }
   // PayPal-Request-Id is required when creating an order with payment_source.
-  return call('POST', '/v2/checkout/orders', {
+  const result = await call('POST', '/v2/checkout/orders', {
     token,
     body: order,
     extraHeaders: { 'PayPal-Request-Id': requestId('order') },
   });
+  return { ...result, vaultId: extractVaultId(result) || null };
 }
 
 // Captures an approved order.
 export async function captureOrder(orderId) {
   const token = await getAccessToken();
-  return call('POST', `/v2/checkout/orders/${orderId}/capture`, {
+  const captureResult = await call('POST', `/v2/checkout/orders/${orderId}/capture`, {
     token,
     body: {},
     extraHeaders: { 'PayPal-Request-Id': requestId('capture') },
   });
+
+  const orderDetails = await call('GET', `/v2/checkout/orders/${orderId}`, {
+    token,
+    extraHeaders: { 'PayPal-Request-Id': requestId('order-details') },
+  });
+
+  const vaultId = extractVaultId(orderDetails);
+  return { ...captureResult, ...orderDetails, vaultId: vaultId || captureResult.vaultId || null };
 }
 
 // Full or partial refund (reversal) of a capture.

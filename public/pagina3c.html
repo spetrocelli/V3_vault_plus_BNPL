@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acme Insurance - Page 3C - Tokenize for Pay Later redirect</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"><span class="dot">●</span> Acme Insurance <span class="tag">| Online Insurance</span></div>
+    <a href="/" class="back-home">← Back to home</a>
+    <div class="step">Page 3C / Scenario C</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1>Tokenize your PayPal account</h1>
+      <p class="subtitle">Scenario C — the discounted premium will be paid later through a redirect-based Pay Later flow.</p>
+
+      <div class="price-box">
+        <div>
+          <div class="label">Discounted premium (will be paid later)</div>
+          <div class="amount" id="display-amount">—</div>
+        </div>
+      </div>
+
+      <div class="result ok" style="background:#fff7e0;border-color:#f0d488">
+        <div class="icon">🔒</div>
+        <div>
+          <strong>Choose the discounted purchase flow.</strong>
+          <div class="hint">The checkout creates the vault during the purchase and returns the vault ID that will be used later for the extra charge if the Black Box is not installed.</div>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-top:16px">Pay with JS SDK</p>
+      <div id="paypal-pay" style="margin-top:8px"></div>
+      <div id="paypal-paylater" style="margin-top:8px"></div>
+
+      <p class="section-label" style="margin-top:16px">Redirect flow without JS SDK</p>
+      <button class="btn" id="server-redirect" style="margin-top:8px">▶ Start redirect Pay Later</button>
+      <div id="pay-result"></div>
+    </div>
+  </main>
+
+  <section class="logpanel">
+    <div class="loghead">📋 FRONTEND LOG — Page 3C
+      <button class="clear" id="logclear">clear</button>
+    </div>
+    <div class="logbody" id="logbody"></div>
+  </section>
+
+  <script type="module" src="/js/pagina3c.js"></script>
+</body>
+</html>

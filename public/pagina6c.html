@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acme Insurance - Page 6C - Pay Later result</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"><span class="dot">●</span> Acme Insurance <span class="tag">| Online Insurance</span></div>
+    <a href="/" class="back-home">← Back to home</a>
+    <div class="step">Page 6C / Scenario C</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1>Pay Later redirect completed</h1>
+      <p class="subtitle">Scenario C — the redirect flow has finished and the order was captured.</p>
+
+      <div class="result ok" id="result">
+        <div class="icon">✅</div>
+        <div>
+          <div><strong>Payment completed</strong></div>
+          <div class="k">Order ID</div><div class="v" id="r-order">—</div>
+          <div class="k">Capture ID</div><div class="v" id="r-capture">—</div>
+          <div class="k">Amount paid</div><div class="v" id="r-amount">—</div>
+          <div class="k">Method</div><div class="v" id="r-method">Pay Later redirect</div>
+          <div class="k">Vault ID for extra charge</div><div class="v" id="r-vault">—</div>
+        </div>
+      </div>
+
+      <button class="btn" id="extra-btn" style="margin-top:12px">⚡ Charge extra amount</button>
+      <div id="extra-result"></div>
+    </div>
+  </main>
+
+  <section class="logpanel">
+    <div class="loghead">📋 FRONTEND LOG — Page 6C
+      <button class="clear" id="logclear">clear</button>
+    </div>
+    <div class="logbody" id="logbody"></div>
+  </section>
+
+  <script type="module" src="/js/pagina6c.js"></script>
+</body>
+</html>

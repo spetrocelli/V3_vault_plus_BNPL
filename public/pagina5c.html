@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acme Insurance - Page 5C - Pay Later redirect</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"><span class="dot">●</span> Acme Insurance <span class="tag">| Online Insurance</span></div>
+    <a href="/" class="back-home">← Back to home</a>
+    <div class="step">Page 5C / Scenario C</div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1>Start the redirect-based Pay Later flow</h1>
+      <p class="subtitle">Scenario C — after tokenization, the app starts a Pay Later checkout and redirects you to PayPal.</p>
+
+      <div class="price-box">
+        <div>
+          <div class="label">Total to pay (discounted premium)</div>
+          <div class="amount" id="display-amount">—</div>
+        </div>
+      </div>
+
+      <p class="hint" id="vault-info">Tokenized account: —</p>
+      <button class="btn" id="pay-later">▶ Start Pay Later redirect</button>
+      <div id="pay-result"></div>
+    </div>
+  </main>
+
+  <section class="logpanel">
+    <div class="loghead">📋 FRONTEND LOG — Page 5C
+      <button class="clear" id="logclear">clear</button>
+    </div>
+    <div class="logbody" id="logbody"></div>
+  </section>
+
+  <script type="module" src="/js/pagina5c.js"></script>
+</body>
+</html>

@@ -53,10 +53,20 @@ app.get('/api/config', (_req, res) => {
 // ---- Standard checkout (Scenario A) ----
 app.post('/api/orders', async (req, res) => {
   try {
-    const { amount, description } = req.body;
-    logInfo(`Creating standard order amount=${amount} ${MONEY.currency}`);
-    const order = await createOrder({ amount, description });
-    res.json({ id: order.id, status: order.status });
+    const { amount, description, createVault, paymentMethodSelected, paymentMethodPreference, currencyCode } = req.body;
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    logInfo(`Creating order amount=${amount} ${MONEY.currency}`);
+    const order = await createOrder({
+      amount,
+      description,
+      createVault: Boolean(createVault),
+      paymentMethodSelected,
+      paymentMethodPreference,
+      currencyCode: currencyCode || MONEY.currency,
+      returnUrl: `${baseUrl}/api/return`,
+      cancelUrl: `${baseUrl}/api/cancel`,
+    });
+    res.json({ id: order.id, status: order.status, vaultId: order.vaultId || null });
   } catch (err) {
     logError('createOrder error', err);
     res.status(err.status || 500).json({ error: err.message, details: err.details });
@@ -68,12 +78,16 @@ app.post('/api/orders/:id/capture', async (req, res) => {
     logInfo(`Capturing order ${req.params.id}`);
     const data = await captureOrder(req.params.id);
     const capture = data.purchase_units?.[0]?.payments?.captures?.[0];
+    if (data.vaultId) {
+      lastVault = { vaultId: data.vaultId, createdAt: new Date().toISOString() };
+    }
     res.json({
       id: data.id,
       status: data.status,
       captureId: capture?.id,
       amount: capture?.amount,
       payer: data.payer,
+      vaultId: data.vaultId || null,
     });
   } catch (err) {
     logError('captureOrder error', err);
@@ -140,6 +154,37 @@ app.post('/api/vault/payment-token', async (req, res) => {
   }
 });
 
+// ---- Scenario C: redirect-based Pay Later flow after tokenization ----
+app.post('/api/vault/paylater', async (req, res) => {
+  try {
+    const { amount, description, paymentMethodSelected = 'PAYPAL_PAY_LATER' } = req.body;
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    logInfo(`Creating checkout-with-vault Pay Later order amount=${amount} ${MONEY.currency}`);
+    const order = await createOrder({
+      amount,
+      description,
+      createVault: true,
+      currencyCode: MONEY.currency,
+      paymentMethodSelected,
+      userAction: 'CONTINUE',
+      returnUrl: `${baseUrl}/api/return`,
+      cancelUrl: `${baseUrl}/api/cancel`,
+    });
+    if (order.vaultId) {
+      lastVault = { vaultId: order.vaultId, createdAt: new Date().toISOString() };
+    }
+    const payerActionLink = order.links?.find((link) => link.rel === 'payer-action')?.href
+      || order.links?.find((link) => link.rel === 'approve')?.href;
+    if (!payerActionLink) {
+      throw new Error('PayPal payer-action link not returned by createOrder');
+    }
+    res.json({ id: order.id, status: order.status, payerActionUrl: payerActionLink, vaultId: order.vaultId || null });
+  } catch (err) {
+    logError('paylater order error', err);
+    res.status(err.status || 500).json({ error: err.message, details: err.details });
+  }
+});
+
 // ---- Payment with the tokenized account (Scenario B, Page 5 "pay now" and Page 6 "extra") ----
 app.post('/api/vault/pay', async (req, res) => {
   try {
@@ -171,6 +216,39 @@ app.post('/api/vault/pay', async (req, res) => {
     logError('vault payment error', err);
     res.status(err.status || 500).json({ error: err.message, details: err.details });
   }
+});
+
+app.get('/api/return', async (req, res) => {
+  try {
+    const orderId = req.query.token || req.query.orderId;
+    if (!orderId) {
+      return res.redirect('/pagina6c.html?status=missing-order');
+    }
+    logInfo(`Capturing order ${orderId} after PayPal return URL`);
+    const data = await captureOrder(orderId);
+    const capture = data.purchase_units?.[0]?.payments?.captures?.[0];
+    const amount = capture?.amount?.value || data.purchase_units?.[0]?.amount?.value;
+    const vaultId = data.vaultId || lastVault?.vaultId || '';
+    if (vaultId) {
+      lastVault = { vaultId, createdAt: new Date().toISOString() };
+    }
+    const query = new URLSearchParams({
+      orderId: data.id,
+      captureId: capture?.id || '',
+      amount: amount || '',
+      status: data.status || '',
+      method: 'paylater-redirect',
+      vaultId,
+    }).toString();
+    res.redirect(`/pagina6c.html?${query}`);
+  } catch (err) {
+    logError('return callback error', err);
+    res.redirect('/pagina6c.html?status=error&message=' + encodeURIComponent(err.message));
+  }
+});
+
+app.get('/api/cancel', (_req, res) => {
+  res.redirect('/pagina5c.html?status=cancelled');
 });
 
 app.listen(PORT, () => {

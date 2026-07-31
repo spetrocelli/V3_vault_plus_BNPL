@@ -22,23 +22,30 @@ let scenario = null;
   // Option selection
   const optA = document.getElementById('optA');
   const optB = document.getElementById('optB');
+  const optC = document.getElementById('optC');
   const cont = document.getElementById('continue');
 
-  function select(s, el) {
+  function select(s) {
     scenario = s;
     optA.classList.toggle('selected', s === 'A');
     optB.classList.toggle('selected', s === 'B');
+    optC.classList.toggle('selected', s === 'C');
     cont.disabled = false;
     Logger.step(`Option ${s} selected`);
   }
-  optA.onclick = () => select('A', optA);
-  optB.onclick = () => select('B', optB);
+  optA.onclick = () => select('A');
+  optB.onclick = () => select('B');
+  optC.onclick = () => select('C');
 
   cont.onclick = () => {
     if (scenario === 'A') {
       State.set({ scenario: 'A', amount: cfg.fullPrice });
       Logger.step('Scenario A → full premium → Page 2');
       goTo('/pagina2.html');
+    } else if (scenario === 'C') {
+      State.set({ scenario: 'C', amount: cfg.discountedPrice });
+      Logger.step('Scenario C → tokenization → Page 3C');
+      goTo('/pagina3c.html');
     } else {
       State.set({ scenario: 'B', amount: cfg.discountedPrice });
       Logger.step('Scenario B → tokenization → Page 3');
